@@ -1,0 +1,7 @@
+/lib/*.jar
+/out/
+/bin/
+/target/
+.vscode/
+.classpath
+.project
