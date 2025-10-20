@@ -1,6 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class CalculatorTest  {
     @Test
@@ -38,5 +40,15 @@ class CalculatorTest  {
         assertEquals(2, c.divide(6, 3));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "1, 1, 2",
+        "2, 3, 5",
+        "-1, 4, 3",
+        "0, 0, 0"
+    })
+    void add_manyCases(int a, int b, int expected) {
+        assertEquals(expected, new Calculator().add(a, b));
+    }
 
 }
