@@ -1,6 +1,6 @@
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class CalculatorTest  {
     @Test
@@ -25,7 +25,14 @@ class CalculatorTest  {
     void multiply_twoTimesFour_returnsEight() {
         Calculator c = new Calculator();
         assertEquals(8, c.multiply(2, 4));
+    }
+
+    @Test
+    void divide_byZero_throws() {
+        Calculator c = new Calculator();
+        assertThrows(IllegalArgumentException.class, () -> c.divide(1, 0));
 }
+
 
 
 }
