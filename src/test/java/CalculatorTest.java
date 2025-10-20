@@ -8,10 +8,11 @@ class CalculatorTest {
         Calculator c = new Calculator();
         assertEquals(5, c.add(2, 3));
     }
-}
 
     @Test
     void add_onePlusOne_returnsTwo() {
         var c = new Calculator();
         assertEquals(2, c.add(1, 1));
     }
+
+}
