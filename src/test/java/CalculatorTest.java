@@ -31,8 +31,12 @@ class CalculatorTest  {
     void divide_byZero_throws() {
         Calculator c = new Calculator();
         assertThrows(IllegalArgumentException.class, () -> c.divide(1, 0));
-}
-
+    }
+    @Test
+    void divide_sixByThree_returnsTwo() {
+        Calculator c = new Calculator();
+        assertEquals(2, c.divide(6, 3));
+    }
 
 
 }
