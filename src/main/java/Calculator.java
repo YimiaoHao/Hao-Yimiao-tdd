@@ -1,3 +1,5 @@
 public class Calculator {
-public int add(int a, int b) { return 5; }
+  public int add(int a, int b) { 
+    return a + b; 
+  }
 }
