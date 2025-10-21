@@ -38,6 +38,11 @@ public class ReservationService {
    * Throws IllegalArgumentException if no such reservation exists.
    */
   public void cancel(String userId, String bookId) {
+
+    if (!reservationRepo.existsByUserAndBook(userId, bookId)) {
+      throw new IllegalArgumentException("No such reservation");
+    }
+
     Book book = bookRepo.findById(bookId);
     book.setCopiesAvailable(book.getCopiesAvailable() + 1);
     reservationRepo.delete(userId, bookId);
