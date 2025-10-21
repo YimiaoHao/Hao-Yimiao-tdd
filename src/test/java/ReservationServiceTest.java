@@ -48,11 +48,26 @@ public class ReservationServiceTest {
     void reserve_bookNotFound_throws() {
         var books = new MemoryBookRepository(); 
         var reservations = new MemoryReservationRepository();
-        
+
         var service = new ReservationService(books, reservations);
 
         assertThrows(IllegalArgumentException.class, () -> service.reserve("u1", "bX"));
+    }
+
+    @Test
+    void cancel_existingReservation_increments_and_deletes() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+        books.save(new Book("b1", "Clean Code", 2));
+        var service = new ReservationService(books, reservations);
+
+        service.reserve("u1", "b1");
+        service.cancel("u1", "b1");
+
+        assertEquals(2, books.findById("b1").getCopiesAvailable());
+        assertFalse(reservations.existsByUserAndBook("u1", "b1"));
 }
+
 
 
 }
