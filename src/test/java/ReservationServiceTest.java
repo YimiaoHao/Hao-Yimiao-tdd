@@ -94,8 +94,29 @@ public class ReservationServiceTest {
         assertEquals(2, list.size());
         }
 
+    @Test
+    void listReservationsForBook_returnsAllForThatBook() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+        books.save(new Book("b1","X", 2));
+        books.save(new Book("b2","Y", 2));
+        var s = new ReservationService(books, reservations);
 
+        s.reserve("u1","b1");
+        s.reserve("u2","b1");
+        s.reserve("u3","b2"); //noise
 
+        var list = s.listReservationsForBook("b1");
+        assertEquals(2, list.size());
+        assertTrue(list.stream().allMatch(r -> r.getBookId().equals("b1")));
+        }
+
+    @Test
+    void listReservationsForBook_returnsEmptyWhenNone() {
+        var s = new ReservationService(new MemoryBookRepository(), new MemoryReservationRepository());
+        var list = s.listReservationsForBook("nope");
+        assertTrue(list.isEmpty());
+        }
 
 
 }
