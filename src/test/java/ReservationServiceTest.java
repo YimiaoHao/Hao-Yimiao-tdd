@@ -11,10 +11,25 @@ public class ReservationServiceTest {
         books.save(new Book("b1", "Clean Code", 2));
 
         var service = new ReservationService(books, reservations);
-        
+
         service.reserve("u1", "b1");
 
         assertEquals(1, books.findById("b1").getCopiesAvailable());
         assertTrue(reservations.existsByUserAndBook("u1", "b1"));
     }
+
+    @Test
+    void reserve_sameUserSameBook_twice_throws() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+
+        books.save(new Book("b1", "Clean Code", 2));
+
+        var service = new ReservationService(books, reservations);
+
+        service.reserve("u1", "b1"); 
+
+        assertThrows(IllegalStateException.class, () -> service.reserve("u1", "b1")); 
+}
+
 }
