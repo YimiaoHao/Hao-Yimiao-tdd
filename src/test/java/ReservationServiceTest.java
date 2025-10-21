@@ -66,7 +66,18 @@ public class ReservationServiceTest {
 
         assertEquals(2, books.findById("b1").getCopiesAvailable());
         assertFalse(reservations.existsByUserAndBook("u1", "b1"));
-}
+    }
+
+    @Test
+    void cancel_nonExisting_throws() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+        books.save(new Book("b1", "Clean Code", 1));
+        var service = new ReservationService(books, reservations);
+
+        assertThrows(IllegalArgumentException.class, () -> service.cancel("u1", "b1"));
+    }
+
 
 
 
