@@ -31,6 +31,36 @@ public class ReservationServicePriorityTest {
         assertTrue(reservations.existsByUserAndBook("p1", "b1"));
         assertFalse(reservations.existsByUserAndBook("u1", "b1"));
         assertEquals(0, books.findById("b1").getCopiesAvailable());
-  }
+    }
+
+    /*
+    When implementing the waiting queue in Step 1,
+    Already naturally used ArrayDeque + addLast/pollFirst,
+    This itself is FIFO
+    So when you write the "FIFO" test, it can be run directly.
+    */
+    @Test
+    void priority_waitlist_is_FIFO() {
+        var books = new MemoryBookRepository();
+        var res   = new MemoryReservationRepository();
+        books.save(new Book("b1", "X", 2));
+        var s = new ReservationService(books, res);
+
+        s.reserve("u1", "b1");
+        s.reserve("u2", "b1");
+
+        s.reservePriority("p1", "b1");
+        s.reservePriority("p2", "b1");
+
+        s.cancel("u1", "b1");
+        assertTrue(res.existsByUserAndBook("p1", "b1"));
+        assertFalse(res.existsByUserAndBook("p2", "b1"));
+
+        s.cancel("u2", "b1");
+        assertTrue(res.existsByUserAndBook("p2", "b1"));
+    } 
+
+
+
     
 }
