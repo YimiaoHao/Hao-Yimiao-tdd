@@ -30,6 +30,19 @@ public class ReservationServiceTest {
         service.reserve("u1", "b1"); 
 
         assertThrows(IllegalStateException.class, () -> service.reserve("u1", "b1")); 
-}
+    }
+
+    @Test
+    void reserve_noCopies_throws() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+
+        books.save(new Book("b1", "DDD", 0));
+
+        var service = new ReservationService(books, reservations);
+
+        assertThrows(IllegalStateException.class, () -> service.reserve("u1", "b1"));
+    }
+
 
 }
