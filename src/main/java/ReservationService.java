@@ -32,15 +32,15 @@ public class ReservationService {
     book.setCopiesAvailable(book.getCopiesAvailable() - 1);
     reservationRepo.save(new Reservation(userId, bookId));
   }
-  
-
 
   /**
    * Cancel an existing reservation for a user.
    * Throws IllegalArgumentException if no such reservation exists.
    */
   public void cancel(String userId, String bookId) {
-    // TODO: Implement using TDD
+    Book book = bookRepo.findById(bookId);
+    book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+    reservationRepo.delete(userId, bookId);
   }
 
   /** List all active reservations for a given user. */
