@@ -78,6 +78,23 @@ public class ReservationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.cancel("u1", "b1"));
     }
 
+    @Test
+    void listReservations_returnsUserReservations() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+        books.save(new Book("b1", "A", 5));
+        books.save(new Book("b2", "B", 5));
+        var service = new ReservationService(books, reservations);
+
+        service.reserve("u1", "b1");
+        service.reserve("u1", "b2");
+        service.reserve("u2", "b1"); 
+
+        var list = service.listReservations("u1");
+        assertEquals(2, list.size());
+        }
+
+
 
 
 
