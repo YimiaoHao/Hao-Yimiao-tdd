@@ -43,6 +43,16 @@ public class ReservationServiceTest {
 
         assertThrows(IllegalStateException.class, () -> service.reserve("u1", "b1"));
     }
+    
+    @Test
+    void reserve_bookNotFound_throws() {
+        var books = new MemoryBookRepository(); 
+        var reservations = new MemoryReservationRepository();
+        
+        var service = new ReservationService(books, reservations);
+
+        assertThrows(IllegalArgumentException.class, () -> service.reserve("u1", "bX"));
+}
 
 
 }
