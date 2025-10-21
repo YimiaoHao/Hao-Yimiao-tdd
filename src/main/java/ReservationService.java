@@ -15,7 +15,9 @@ public class ReservationService {
    * Throws IllegalStateException if no copies available or user already reserved.
    */
   public void reserve(String userId, String bookId) {
-    //  TODO: Implement using TDD
+    Book book = bookRepo.findById(bookId);
+    book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+    reservationRepo.save(new Reservation(userId, bookId));
   }
 
   /**
