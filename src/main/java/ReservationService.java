@@ -50,8 +50,7 @@ public class ReservationService {
 
   /** List all active reservations for a given user. */
   public List<Reservation> listReservations(String userId) {
-    // TODO: Implement using TDD
-    return null;
+    return reservationRepo.findByUser(userId);
   }
 
   /** List all reservations for a book. */
