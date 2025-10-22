@@ -99,4 +99,25 @@ public class ReservationServicePriorityTest {
         assertEquals(1, books.findById("b4").getCopiesAvailable());
         assertEquals(0, waitlist.size("b4"));
     }
+
+    @Test
+    void queuedUserReservingWhenCopiesReturn_removesTheirWaitEntry() {
+        var books = new MemoryBookRepository();
+        var reservations = new MemoryReservationRepository();
+        var waitlist = new MemoryWaitlistRepository();
+        var s = new ReservationService(books, reservations, waitlist);
+
+        books.save(new Book("b6", "Return", 0));
+
+        s.reservePriority("uQ", "b6");
+        assertEquals(1, waitlist.size("b6"));
+
+        books.findById("b6").setCopiesAvailable(1);
+
+        s.reservePriority("uQ", "b6");
+
+        assertTrue(reservations.existsByUserAndBook("uQ", "b6"));
+        assertEquals(0, books.findById("b6").getCopiesAvailable());
+        assertEquals(0, waitlist.size("b6")); 
+    }
 }
