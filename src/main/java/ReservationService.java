@@ -39,11 +39,17 @@ public void reserve(String userId, String bookId) {
     if (book.getCopiesAvailable() <= 0) {
         throw new IllegalStateException("No copies available");
     }
+
+    // If the user is already in the waiting queue for the book, clear the waiting entries
+    if (waitlistRepo != null && waitlistRepo.exists(bookId, userId)) {
+        waitlistRepo.remove(bookId, userId);
+    }
+
     book.setCopiesAvailable(book.getCopiesAvailable() - 1);
     reservationRepo.save(new Reservation(userId, bookId));
 }
 
-/* 
+/*
     Cancel an existing reservation for a user.
     Throws IllegalArgumentException if no such reservation exists.
     
@@ -64,6 +70,7 @@ public void cancel(String userId, String bookId) {
         if (next != null) {
             reservationRepo.save(new Reservation(next.getUserId(), bookId));
             return; // Return directly, keeping copies at 0
+
         }
     }
 
@@ -78,8 +85,10 @@ public List<Reservation> listReservations(String userId) {
 
 /** List all reservations for a book. */
 public List<Reservation> listReservationsForBook(String bookId) {
+    // TODO: Implement using TDD
     return reservationRepo.findByBook(bookId);
 }
+
 
 /*  New priority reservation
     Only the behavior of going from out of stock to entering the waiting queue is implemented；
