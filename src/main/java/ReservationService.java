@@ -41,6 +41,7 @@ public void reserve(String userId, String bookId) {
     }
 
     // If the user is already in the waiting queue for the book, clear the waiting entries
+
     if (waitlistRepo != null && waitlistRepo.exists(bookId, userId)) {
         waitlistRepo.remove(bookId, userId);
     }
@@ -56,6 +57,7 @@ public void reserve(String userId, String bookId) {
     Should any books be queued for collection, they shall be issued directly to the first user in the queue; consequently, the stock level shall not increase.
     Otherwise, the original rule of adding one to the inventory shall still apply.
   */
+
 public void cancel(String userId, String bookId) {
 
     if (!reservationRepo.existsByUserAndBook(userId, bookId)) {
@@ -70,7 +72,6 @@ public void cancel(String userId, String bookId) {
         if (next != null) {
             reservationRepo.save(new Reservation(next.getUserId(), bookId));
             return; // Return directly, keeping copies at 0
-
         }
     }
 
@@ -85,14 +86,13 @@ public List<Reservation> listReservations(String userId) {
 
 /** List all reservations for a book. */
 public List<Reservation> listReservationsForBook(String bookId) {
-    // TODO: Implement using TDD
     return reservationRepo.findByBook(bookId);
 }
-
 
 /*  New priority reservation
     Only the behavior of going from out of stock to entering the waiting queue is implemented；
 */
+
 public void reservePriority(String userId, String bookId) {
     Book book = bookRepo.findById(bookId);
     if (book == null) {
@@ -102,18 +102,18 @@ public void reservePriority(String userId, String bookId) {
         throw new IllegalStateException("Already reserved");
     }
 
-    // Only processing from out-of-stock to waiting queue
-    if (book.getCopiesAvailable() <= 0) {
-        if (waitlistRepo == null) {
-            throw new IllegalStateException("No copies available");
-        }
-        if (waitlistRepo.exists(bookId, userId)) {
-            throw new IllegalStateException("Already in waitlist");
-        }
-        waitlistRepo.enqueue(bookId, userId, true);
+    if (book.getCopiesAvailable() > 0) {
+        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+        reservationRepo.save(new Reservation(userId, bookId));
         return;
     }
 
-    throw new IllegalStateException("Use reserve() when copies are available");
+    if (waitlistRepo == null) {
+        throw new IllegalStateException("No copies available");
+    }
+    if (waitlistRepo.exists(bookId, userId)) {
+        throw new IllegalStateException("Already in waitlist");
+    }
+    waitlistRepo.enqueue(bookId, userId, true);
 }
 }
