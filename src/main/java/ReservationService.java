@@ -40,8 +40,7 @@ public void reserve(String userId, String bookId) {
         throw new IllegalStateException("No copies available");
     }
 
-    // If the user is already in the waiting queue for the book, clear the waiting entries
-
+    //  If the user is already in the waiting queue for the book, clear the waiting entries
     if (waitlistRepo != null && waitlistRepo.exists(bookId, userId)) {
         waitlistRepo.remove(bookId, userId);
     }
@@ -50,6 +49,7 @@ public void reserve(String userId, String bookId) {
     reservationRepo.save(new Reservation(userId, bookId));
 }
 
+
 /*
     Cancel an existing reservation for a user.
     Throws IllegalArgumentException if no such reservation exists.
@@ -57,7 +57,6 @@ public void reserve(String userId, String bookId) {
     Should any books be queued for collection, they shall be issued directly to the first user in the queue; consequently, the stock level shall not increase.
     Otherwise, the original rule of adding one to the inventory shall still apply.
   */
-
 public void cancel(String userId, String bookId) {
 
     if (!reservationRepo.existsByUserAndBook(userId, bookId)) {
@@ -103,10 +102,14 @@ public void reservePriority(String userId, String bookId) {
     }
 
     if (book.getCopiesAvailable() > 0) {
+        if (waitlistRepo != null && waitlistRepo.exists(bookId, userId)) {
+            waitlistRepo.remove(bookId, userId);
+        }
         book.setCopiesAvailable(book.getCopiesAvailable() - 1);
         reservationRepo.save(new Reservation(userId, bookId));
         return;
     }
+
 
     if (waitlistRepo == null) {
         throw new IllegalStateException("No copies available");
